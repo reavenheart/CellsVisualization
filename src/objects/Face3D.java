@@ -163,9 +163,9 @@ public class Face3D {
         faceNormal.y = nVector2[2]*nVector1[0] - nVector2[0]*nVector1[2];
         faceNormal.z = nVector2[0]*nVector1[1] - nVector2[1]*nVector1[0];
 
-        //faceNormal.x = -faceNormal.x;
-        //faceNormal.y = -faceNormal.y;
-        //faceNormal.z = -faceNormal.z;
+        faceNormal.x = -faceNormal.x;
+        faceNormal.y = -faceNormal.y;
+        faceNormal.z = -faceNormal.z;
     }
 
     public void renderFace(TextureCoords texture, GL2 gl, boolean isSelfNormal, boolean isTextureOn) {
@@ -247,7 +247,7 @@ public class Face3D {
 
     public boolean containsEdge(Edge3D edge) {
         for (Edge3D e : edges) {
-            if (e.equals(edge))
+            if (e.containsVerticies(edge.v1, edge.v2))
                 return true;
         }
 

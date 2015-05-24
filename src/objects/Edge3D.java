@@ -26,6 +26,7 @@ public class Edge3D {
     private void countEdgeCenter() {
         edgeCenter = new SpaceObject3D();
 
+        /*
         float distance = (float)Math.sqrt(
                 (v2.x - v1.x)*(v2.x - v1.x) +
                 (v2.y - v1.y)*(v2.y - v1.y) +
@@ -39,6 +40,11 @@ public class Edge3D {
         edgeCenter.x = (v2.x - edgeCenter.x)*distance/2;
         edgeCenter.y = (v2.y - edgeCenter.y)*distance/2;
         edgeCenter.z = (v2.z - edgeCenter.z)*distance/2;
+        */
+
+        edgeCenter.x = (v2.x + v1.x)/2;
+        edgeCenter.y = (v2.y + v1.y)/2;
+        edgeCenter.z = (v2.z + v1.z)/2;
     }
 
     public boolean containsVertex(Vertex3D vertex) {

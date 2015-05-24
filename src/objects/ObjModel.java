@@ -196,16 +196,22 @@ public class ObjModel {
             ArrayList<Vertex3D> newVerticies = new ArrayList<>();
             ArrayList<Face3D> adjacentFaces = new ArrayList<>();
 
-            Vertex3D middleVertex = new Vertex3D();
-            Vertex3D middleVertex2;
+            Vertex3D F = new Vertex3D();
+            Vertex3D R;
 
-            middleVertex.x = face.faceCenter.x;
-            middleVertex.y = face.faceCenter.y;
-            middleVertex.z = face.faceCenter.z;
+            F.x = face.faceCenter.x;
+            F.y = face.faceCenter.y;
+            F.z = face.faceCenter.z;
 
-            newVerticies.add(middleVertex);
+            F.normal.x = face.faceNormal.x;
+            F.normal.y = face.faceNormal.y;
+            F.normal.z = face.faceNormal.z;
+
+            newVerticies.add(F);
 
             for (int i = 0; i < face.verticies.size(); i++) {
+
+                adjacentFaces = new ArrayList<>();
 
                 for (Face3D f : faces) {
                     if (f.containsVertex(face.verticies.get(i))) {
@@ -213,36 +219,72 @@ public class ObjModel {
                     }
                 }
 
-                middleVertex = new Vertex3D();
-                middleVertex2 = new Vertex3D();
+                F = new Vertex3D();
+                R = new Vertex3D();
+
+                ArrayList<SpaceObject3D> edgeCenters = new ArrayList<>();
+                ArrayList<Edge3D> edges = new ArrayList<>();
 
                 for (Face3D f : adjacentFaces) {
-                    middleVertex.x += f.faceCenter.x;
-                    middleVertex.y += f.faceCenter.y;
-                    middleVertex.z += f.faceCenter.z;
+                    F.x += f.faceCenter.x;
+                    F.y += f.faceCenter.y;
+                    F.z += f.faceCenter.z;
 
                     for (Edge3D e : f.edges) {
                         if (e.containsVertex(face.verticies.get(i))) {
-                            middleVertex2.x += e.edgeCenter.x;
-                            middleVertex2.y += e.edgeCenter.y;
-                            middleVertex2.z += e.edgeCenter.z;
+                            edgeCenters.add(e.edgeCenter);
+                            edges.add(e);
                         }
                     }
                 }
 
-                middleVertex.x /= adjacentFaces.size();
-                middleVertex.y /= adjacentFaces.size();
-                middleVertex.z /= adjacentFaces.size();
+                for (int l = 0; l < edgeCenters.size(); l++) {
+                    for (int k = edgeCenters.size() - 1; k > l; k--) {
+                        if (edgeCenters.get(l).positionEquals(edgeCenters.get(k))) {
+                            edgeCenters.remove(k);
+                        }
+                    }
+                }
 
-                middleVertex2.x /= adjacentFaces.size();
-                middleVertex2.y /= adjacentFaces.size();
-                middleVertex2.z /= adjacentFaces.size();
+                F.x /= adjacentFaces.size();
+                F.y /= adjacentFaces.size();
+                F.z /= adjacentFaces.size();
 
-                middleVertex.x = (middleVertex.x + middleVertex.x + face.verticies.get(i).x) / 3;
-                middleVertex.y = (middleVertex.y + middleVertex.y + face.verticies.get(i).y) / 3;
-                middleVertex.z = (middleVertex.z + middleVertex.z + face.verticies.get(i).z) / 3;
+                for (SpaceObject3D so : edgeCenters) {
+                    R.x += so.x;
+                    R.y += so.y;
+                    R.z += so.z;
+                }
 
-                newVerticies.add(middleVertex);
+                R.x /= edgeCenters.size();
+                R.y /= edgeCenters.size();
+                R.z /= edgeCenters.size();
+
+                //middleVertex.x = (middleVertex.x + middleVertex.x + face.verticies.get(i).x) / 3;
+                //middleVertex.y = (middleVertex.y + middleVertex.y + face.verticies.get(i).y) / 3;
+                //middleVertex.z = (middleVertex.z + middleVertex.z + face.verticies.get(i).z) / 3;
+
+                F.x = (F.x + 2 * R.x + (adjacentFaces.size() - 3) * face.verticies.get(i).x) / adjacentFaces.size();
+                F.y = (F.y + 2 * R.y + (adjacentFaces.size() - 3) * face.verticies.get(i).y) / adjacentFaces.size();
+                F.z = (F.z + 2 * R.z + (adjacentFaces.size() - 3) * face.verticies.get(i).z) / adjacentFaces.size();
+
+                SpaceObject3D normal = new SpaceObject3D();
+
+                for (Face3D f : adjacentFaces) {
+                    normal.x += f.faceNormal.x;
+                    normal.y += f.faceNormal.y;
+                    normal.z += f.faceNormal.z;
+                }
+
+                normal.x /= adjacentFaces.size();
+                normal.y /= adjacentFaces.size();
+                normal.z /= adjacentFaces.size();
+
+                F.normal.x = normal.x;
+                F.normal.y = normal.y;
+                F.normal.z = normal.z;
+
+                newVerticies.add(F);
 
                 Edge3D edge;
                 if (i < face.verticies.size() - 1)
@@ -258,23 +300,39 @@ public class ObjModel {
                         }
                     }
 
-                    middleVertex = new Vertex3D();
+                    F = new Vertex3D();
 
                     for (Face3D f : adjacentFaces) {
-                        middleVertex.x += f.faceCenter.x;
-                        middleVertex.y += f.faceCenter.y;
-                        middleVertex.z += f.faceCenter.z;
+                        F.x += f.faceCenter.x;
+                        F.y += f.faceCenter.y;
+                        F.z += f.faceCenter.z;
                     }
 
-                    middleVertex.x /= adjacentFaces.size();
-                    middleVertex.y /= adjacentFaces.size();
-                    middleVertex.z /= adjacentFaces.size();
+                    F.x /= adjacentFaces.size();
+                    F.y /= adjacentFaces.size();
+                    F.z /= adjacentFaces.size();
 
-                    middleVertex.x = (middleVertex.x + edge.edgeCenter.x) / 2;
-                    middleVertex.y = (middleVertex.y + edge.edgeCenter.y) / 2;
-                    middleVertex.z = (middleVertex.z + edge.edgeCenter.z) / 2;
+                    F.x = (F.x + edge.edgeCenter.x) / 2;
+                    F.y = (F.y + edge.edgeCenter.y) / 2;
+                    F.z = (F.z + edge.edgeCenter.z) / 2;
 
-                    newVerticies.add(middleVertex);
+                    normal = new SpaceObject3D();
+
+                    for (Face3D f : adjacentFaces) {
+                        normal.x += f.faceNormal.x;
+                        normal.y += f.faceNormal.y;
+                        normal.z += f.faceNormal.z;
+                    }
+
+                    normal.x /= adjacentFaces.size();
+                    normal.y /= adjacentFaces.size();
+                    normal.z /= adjacentFaces.size();
+
+                    F.normal.x = normal.x;
+                    F.normal.y = normal.y;
+                    F.normal.z = normal.z;
+
+                    newVerticies.add(F);
                 }
 
             }
@@ -291,7 +349,6 @@ public class ObjModel {
 
             face3D = new Face3D(newVerticies.get(0), newVerticies.get(6), newVerticies.get(7), newVerticies.get(8));
             interpolatedFaces.add(face3D);
-
         }
     }
 }

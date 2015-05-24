@@ -20,4 +20,11 @@ public class SpaceObject3D {
         this.z = z;
     }
 
+    public boolean positionEquals(SpaceObject3D edgeCenter) {
+
+        if (x == edgeCenter.x && y == edgeCenter.y && z == edgeCenter.z)
+            return true;
+
+        return false;
+    }
 }
