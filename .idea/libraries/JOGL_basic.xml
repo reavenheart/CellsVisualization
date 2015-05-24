@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="JOGL_basic">
+    <CLASSES>
+      <root url="jar://E:/Denis/jogamp-all-platforms/jar/gluegen.jar!/" />
+      <root url="jar://E:/Denis/jogamp-all-platforms/jar/gluegen-rt.jar!/" />
+      <root url="jar://E:/Denis/jogamp-all-platforms/jar/jogl-all.jar!/" />
+      <root url="jar://E:/Denis/jogamp-all-platforms/jar/jogl-all-mobile.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
