@@ -37,7 +37,7 @@ public class ObjModel {
 
         isRenderable = true;
 
-        interpolate();
+        //interpolate();
     }
 
     public ObjModel(boolean isRed, boolean isGreen, boolean isBlue) {
@@ -61,7 +61,7 @@ public class ObjModel {
 
         readFile();
 
-        interpolate();
+        //interpolate();
     }
 
     private void readFile() {

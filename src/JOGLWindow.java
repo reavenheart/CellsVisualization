@@ -29,7 +29,7 @@ public class JOGLWindow {
         //animator.add(renderer);
         animator.start();
 
-        final JFrame jframe = new JFrame( "One Triangle3D Swing GLJPanel" );
+        final JFrame jframe = new JFrame( "JOGL visualization window." );
         jframe.addWindowListener( new WindowAdapter() {
             public void windowClosing( WindowEvent windowevent ) {
                 jframe.dispose();
