@@ -1,27 +1,23 @@
-
 import com.jogamp.opengl.util.FPSAnimator;
-import renderers.JOGL2Nehe07TextureFilterLightKey;
-import renderers.ModelRenderer;
-import renderers.ModelRenderer02;
 
-import com.jogamp.opengl.GLCapabilities;
-import com.jogamp.opengl.GLProfile;
+import javax.media.opengl.GLCapabilities;
+import javax.media.opengl.GLProfile;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 /**
- * Created by Denis on 20.04.2015.
+ * Created by Denis on 07.06.2016.
  */
 public class JOGLWindow {
-    static ModelRenderer02 renderer;
+    static Example renderer;
 
     public static void main( String [] args ) {
         GLProfile glprofile = GLProfile.getDefault();
         GLCapabilities glcapabilities = new GLCapabilities( glprofile );
         //GLJPanel gljpanel = new GLJPanel( glcapabilities );
-        renderer = new ModelRenderer02();
+        renderer = new Example();
 
         //gljpanel.addGLEventListener(renderer);
 
