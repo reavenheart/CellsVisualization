@@ -2,7 +2,7 @@ package objects;
 
 import com.jogamp.opengl.util.texture.TextureCoords;
 
-import javax.media.opengl.GL2;
+import com.jogamp.opengl.GL2;
 
 /**
  * Created by Denis on 26.04.2015.

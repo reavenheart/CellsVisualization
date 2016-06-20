@@ -4,8 +4,8 @@ import renderers.JOGL2Nehe07TextureFilterLightKey;
 import renderers.ModelRenderer;
 import renderers.ModelRenderer02;
 
-import javax.media.opengl.GLCapabilities;
-import javax.media.opengl.GLProfile;
+import com.jogamp.opengl.GLCapabilities;
+import com.jogamp.opengl.GLProfile;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;

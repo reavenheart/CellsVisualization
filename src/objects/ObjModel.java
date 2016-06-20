@@ -2,9 +2,10 @@ package objects;
 
 import com.jogamp.opengl.util.texture.TextureCoords;
 
-import javax.media.opengl.GL2;
+import com.jogamp.opengl.GL2;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 /**
  * Created by Denis on 26.04.2015.
@@ -15,7 +16,7 @@ public class ObjModel {
     private ArrayList<Face3D> interpolatedFaces;
     private ArrayList<Polygon3D> interpolatedPolygons;
 
-    private String fileName = "/models/object.obj";
+    private String fileName = "/models/cells.obj";
 
     public boolean isSelfNormals;
     public boolean isTextureOn;
@@ -72,7 +73,10 @@ public class ObjModel {
         ArrayList<SpaceObject3D> normals = new ArrayList<>();
 
         //File file = new File(fileName);
-        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(fileName));
+            /*
             String line;
 
             while ((line = br.readLine()) != null) {
@@ -147,7 +151,149 @@ public class ObjModel {
         } catch (IOException e) {
             e.printStackTrace();
         }
+*/
+            int numpolys = 0;
+            float toppoint = 0;
+            float bottompoint = 0;
+            float leftpoint = 0;
+            float rightpoint = 0;
+            float farpoint = 0;
+            float nearpoint = 0;
 
+            int linecounter = 0;
+            int facecounter = 0;
+                boolean firstpass = true;
+                String newline;
+                while((newline = br.readLine()) != null){
+                    linecounter++;
+                    if(newline.length() > 0) {
+                        newline = newline.trim();
+
+                        //LOADS VERTEX COORDINATES
+                        if (newline.startsWith("v ")) {
+                            float coords[] = new float[4];
+                            String coordstext[] = new String[4];
+                            newline = newline.substring(2, newline.length());
+                            StringTokenizer st = new StringTokenizer(newline, " ");
+                            for (int i = 0; st.hasMoreTokens(); i++)
+                                coords[i] = Float.parseFloat(st.nextToken());
+
+                            if (firstpass) {
+                                rightpoint = coords[0];
+                                leftpoint = coords[0];
+                                toppoint = coords[1];
+                                bottompoint = coords[1];
+                                nearpoint = coords[2];
+                                farpoint = coords[2];
+                                firstpass = false;
+                            }
+                            if (coords[0] > rightpoint)
+                                rightpoint = coords[0];
+                            if (coords[0] < leftpoint)
+                                leftpoint = coords[0];
+                            if (coords[1] > toppoint)
+                                toppoint = coords[1];
+                            if (coords[1] < bottompoint)
+                                bottompoint = coords[1];
+                            if (coords[2] > nearpoint)
+                                nearpoint = coords[2];
+                            if (coords[2] < farpoint)
+                                farpoint = coords[2];
+                            Vertex3D vertex = new Vertex3D();
+                            vertex.x = coords[0];
+                            vertex.y = coords[1];
+                            vertex.z = coords[2];
+                            verticies.add(vertex);
+                        } else
+                            //LOADS VERTEX NORMALS COORDINATES
+                            if (newline.startsWith("vn")) {
+                                float coords[] = new float[4];
+                                String coordstext[] = new String[4];
+                                newline = newline.substring(3, newline.length());
+                                StringTokenizer st = new StringTokenizer(newline, " ");
+                                for (int i = 0; st.hasMoreTokens(); i++)
+                                    coords[i] = Float.parseFloat(st.nextToken());
+
+                                SpaceObject3D normal = new SpaceObject3D();
+                                normal.x = coords[0];
+                                normal.y = coords[1];
+                                normal.z = coords[2];
+
+                                normals.add(normal);
+                            } else
+
+                                //LOADS FACES COORDINATES
+                                if (newline.startsWith("f ")) {
+                                        /*
+                                        facecounter++;
+                                        newline = newline.substring(2, newline.length());
+                                        StringTokenizer st = new StringTokenizer(newline, " ");
+                                        int count = st.countTokens();
+                                        int v[] = new int[count];
+                                        int vt[] = new int[count];
+                                        int vn[] = new int[count];
+                                        for(int i = 0; i < count; i++){
+                                            char chars[] = st.nextToken().toCharArray();
+                                            StringBuffer sb = new StringBuffer();
+                                            char lc = 'x';
+                                            for(int k = 0; k < chars.length; k++){
+                                                if(chars[k] == '/' && lc == '/')
+                                                    sb.append('0');
+                                                lc = chars[k];
+                                                sb.append(lc);
+                                            }
+
+                                            StringTokenizer st2 = new StringTokenizer
+                                                    (sb.toString(), "/");
+                                            int num = st2.countTokens();
+                                            v[i] = Integer.parseInt(st2.nextToken());
+                                            if(num > 1)
+                                                vt[i] = Integer.parseInt(st2.nextToken());
+                                            else
+                                                vt[i] = 0;
+                                            if(num > 2)
+                                                vn[i] = Integer.parseInt(st2.nextToken());
+                                            else
+                                                vn[i] = 0;
+                                        }
+
+                                        faces.add(v);
+                                        facestexs.add(vt);
+                                        facesnorms.add(vn);
+                                        */
+                                    newline = newline.substring(2);
+                                    String[] params = newline.split(" ");
+
+                                    boolean isNormalFound = false;
+
+                                    ArrayList<Vertex3D> vs = new ArrayList<>();
+                                    SpaceObject3D fn = new SpaceObject3D();
+
+                                    for (int i = 0; i < params.length; i++) {
+                                        String faceParts[] = params[i].split("/");
+
+                                        if (faceParts.length > 1 && !isNormalFound) {
+                                            fn = normals.get(Integer.parseInt(faceParts[2]) - 1);
+                                            isNormalFound = true;
+                                        }
+                                        vs.add(verticies.get(Integer.parseInt(faceParts[0]) - 1));
+                                    }
+
+                                    Face3D face = new Face3D(vs, fn);
+
+                                    faces.add(face);
+                                }
+                    }
+                }
+            }
+            catch(IOException e){
+                System.out.println("Failed to read file: " + br.toString());
+            }
+            catch(NumberFormatException e){
+                System.out.println("Malformed OBJ file: " + br.toString() + "\r \r"+ e.getMessage());
+            }
+
+        //interpolate();
     }
 
     public void invertNormals() {
